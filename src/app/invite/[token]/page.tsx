@@ -4,6 +4,8 @@ import { acceptWorkspaceInvite } from '@/modules/invites/actions';
 import { redirect } from 'next/navigation';
 import React from 'react'
 
+export const dynamic = "force-dynamic";
+
 const Invite = async ({ params }: { params: Promise<{ token: string }> }) => {
     const { token } = await params;
     const user = await currentUser();

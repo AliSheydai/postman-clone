@@ -29,7 +29,13 @@ export const currentUser = async () => {
     });
 
     return user;
-  } catch (error) {
+  } catch (error: any) {
+    if (
+      error?.digest === "DYNAMIC_SERVER_USAGE" ||
+      error?.message?.includes("Dynamic server usage")
+    ) {
+      throw error;
+    }
     console.error("Error fetching current user:", error);
     return null;
   }
