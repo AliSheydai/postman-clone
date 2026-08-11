@@ -65,7 +65,7 @@ It provides a sleek UI and developer-focused workflow to test and manage REST AP
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Aestheticsuraj234/postman-clone
+git clone https://github.com/AliSheydai/postman-clone
 cd postman-clone
 ```
 
