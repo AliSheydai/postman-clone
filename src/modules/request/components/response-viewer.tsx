@@ -25,11 +25,12 @@ interface RequestRun {
   id: string;
   requestId?: string;
   status?: number;
-  statusText?: string;
-  headers?: HeadersMap;
+  statusText?: string | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  headers?: any;
   body?: string | object | null;
-  durationMs?: number;
-  createdAt?: string;
+  durationMs?: number | null;
+  createdAt?: string | Date;
 }
 
 interface Result {
@@ -41,8 +42,9 @@ interface Result {
 
 export interface ResponseData {
   success: boolean;
-  requestRun: RequestRun;
+  requestRun?: RequestRun;
   result?: Result;
+  error?: string;
 }
 
 interface Props {
@@ -97,11 +99,11 @@ const ResponseViewer = ({ responseData }: Props) => {
   }
 
   const status: number | undefined =
-    responseData.result?.status ?? responseData.requestRun?.status;
+    responseData.result?.status ?? responseData.requestRun?.status ?? undefined;
   const statusText: string | undefined =
-    responseData.result?.statusText ?? responseData.requestRun?.statusText;
+    responseData.result?.statusText ?? responseData.requestRun?.statusText ?? undefined;
   const duration: number | undefined =
-    responseData.result?.duration ?? responseData.requestRun?.durationMs;
+    responseData.result?.duration ?? responseData.requestRun?.durationMs ?? undefined;
   const size: number | undefined = responseData.result?.size;
   const rawBody = responseData.requestRun?.body;
 
@@ -203,7 +205,7 @@ const ResponseViewer = ({ responseData }: Props) => {
                       className="ml-2 text-xs bg-zinc-700"
                     >
                       {
-                        Object.keys(responseData.requestRun.headers ?? {})
+                        Object.keys(responseData.requestRun?.headers ?? {})
                           .length
                       }
                     </Badge>
@@ -311,8 +313,8 @@ const ResponseViewer = ({ responseData }: Props) => {
                   <div className="p-6">
                     <div className="space-y-3">
                       {Object.entries(
-                        responseData.requestRun.headers ?? {}
-                      ).map(([key, value]) => (
+                        responseData.requestRun?.headers ?? {}
+                      ).map(([key, value]: [string, unknown]) => (
                         <div
                           key={key}
                           className="flex items-start justify-between py-2 border-b border-zinc-800 last:border-b-0"
@@ -322,14 +324,14 @@ const ResponseViewer = ({ responseData }: Props) => {
                               {key}
                             </div>
                             <div className="text-gray-300 text-sm break-all">
-                              {value}
+                              {String(value)}
                             </div>
                           </div>
                           <Button
                             size="sm"
                             variant="ghost"
                             className="text-gray-400 hover:text-white ml-2"
-                            onClick={() => copyToClipboard(`${key}: ${value}`)}
+                            onClick={() => copyToClipboard(`${key}: ${String(value)}`)}
                           >
                             <Copy className="w-3 h-3" />
                           </Button>
